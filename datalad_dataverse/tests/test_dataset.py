@@ -209,20 +209,21 @@ def test_name_mangling(
     odd = ODD(dataverse_admin_api, dataverse_dataset)
 
     paths = (
-        tmp_path / ".dot-in-front" 'c1.txt',
-        tmp_path / " space-in-front" 'c2.txt',
-        tmp_path / "-minus-in-front" 'c3.txt',
-        tmp_path / "Ö-in-front" 'c4.txt',
-        tmp_path / ".Ö-dot-Ö-in-front" 'c5.txt',
-        tmp_path / " Ö-space-Ö-in-front" 'c6.txt',
+        tmp_path / '.dot-in-front' / 'c1.txt',
+        tmp_path / ' space-in-front' / 'c2.txt',
+        tmp_path / '-minus-in-front' / 'c3.txt',
+        tmp_path / 'Ö-in-front' / 'c4.txt',
+        tmp_path / '.Ö-dot-Ö-in-front-c5.txt',
+        tmp_path / ' Ö-space-Ö-in-front-c6.txt',
+        tmp_path / 'dummy.txt',
     )
 
     path_info = dict()
     for path in paths:
         if path.parent != tmp_path:
             path.parent.mkdir()
-        fcontent = path.name
-        path.write_text(path.name)
+        fcontent = 'content of: ' + str(path)
+        path.write_text(fcontent)
         src_md5 = md5sum(path)
         fileid = check_upload(odd, fcontent, path, src_md5)
         path_info[path] = (src_md5, fileid)
@@ -235,7 +236,8 @@ def test_name_mangling(
             dataverse_dataset,
             odd,
             fileid,
-            path)
+            path
+        )
 
         fileid = check_replace_file(odd, fileid, tmp_path)
         check_rename_file(odd, fileid, name="ren" + path.name)
